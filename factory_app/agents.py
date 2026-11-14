@@ -9,9 +9,16 @@ from .prompts import (
     SECURITY_INSTRUCTION,
     TEST_ANALYST_INSTRUCTION,
 )
-from .tools import list_repo_files, read_repo_file, run_baseline_verification, write_run_evidence
+from .tools import (
+    list_repo_files,
+    read_repo_file,
+    run_baseline_verification,
+    write_product_file,
+    write_run_evidence,
+    write_test_file,
+)
 
-GEMINI_MODEL = "gemini-3.8-flash"
+GEMINI_MODEL = "gemini-2.5-flash"
 READ_TOOLS = [list_repo_files, read_repo_file]
 
 intake_agent = LlmAgent(
@@ -19,7 +26,7 @@ intake_agent = LlmAgent(
     model=GEMINI_MODEL,
     description="Analyzes a Change Request and determines whether it is ready for planning.",
     instruction=INTAKE_INSTRUCTION,
-    tools=READ_TOOLS,
+    tools=[*READ_TOOLS, write_run_evidence],
     output_key="intake_report",
 )
 
@@ -28,25 +35,26 @@ planner_agent = LlmAgent(
     model=GEMINI_MODEL,
     description="Creates an implementation plan without changing code.",
     instruction=PLANNER_INSTRUCTION + "\n\nIntake report:\n{intake_report}",
-    tools=READ_TOOLS,
+    tools=[*READ_TOOLS, write_run_evidence],
     output_key="implementation_plan",
 )
 
 coder_agent = LlmAgent(
     name="CoderAgent",
     model=GEMINI_MODEL,
-    description="Implements an approved plan. Write tooling is intentionally absent in starter.",
-    instruction=CODER_INSTRUCTION,
-    tools=READ_TOOLS,
+    description="Implements an approved plan. Writes only under campusflow/.",
+    instruction=CODER_INSTRUCTION + "\n\nApproved plan:\n{implementation_plan}",
+    tools=[*READ_TOOLS, write_product_file, write_run_evidence],
     output_key="coder_report",
 )
 
 test_analyst_agent = LlmAgent(
     name="TestAnalystAgent",
     model=GEMINI_MODEL,
-    description="Finds test gaps and interprets deterministic verification evidence.",
-    instruction=TEST_ANALYST_INSTRUCTION,
-    tools=[*READ_TOOLS, run_baseline_verification],
+    description="Finds test gaps, writes new tests, interprets deterministic verification.",
+    instruction=TEST_ANALYST_INSTRUCTION
+    + "\n\nChange ID: {change_id}\nCoder report:\n{coder_report}",
+    tools=[*READ_TOOLS, run_baseline_verification, write_test_file, write_run_evidence],
     output_key="test_analysis",
 )
 
@@ -55,7 +63,7 @@ reviewer_agent = LlmAgent(
     model=GEMINI_MODEL,
     description="Independent read-only software reviewer.",
     instruction=REVIEWER_INSTRUCTION,
-    tools=READ_TOOLS,
+    tools=[*READ_TOOLS, write_run_evidence],
     output_key="review_report",
 )
 
@@ -64,7 +72,7 @@ security_agent = LlmAgent(
     model=GEMINI_MODEL,
     description="Independent read-only security reviewer.",
     instruction=SECURITY_INSTRUCTION,
-    tools=READ_TOOLS,
+    tools=[*READ_TOOLS, write_run_evidence],
     output_key="security_report",
 )
 

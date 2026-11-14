@@ -9,6 +9,17 @@ ROOT = Path(__file__).resolve().parents[1]
 VALID_GATES = {"requirements", "plan", "review", "release"}
 VALID_DECISIONS = {"APPROVED", "MODIFIED", "REJECTED", "DEFERRED"}
 
+# Map gate+decision -> pipeline status to advance run_factory.py automatically.
+_GATE_STATUS_ADVANCE: dict[tuple[str, str], str] = {
+    ("plan", "APPROVED"): "PLAN_APPROVED",
+    ("plan", "REJECTED"): "PLAN_REJECTED",
+    ("plan", "DEFERRED"): "PLAN_REJECTED",
+    ("review", "APPROVED"): "REVIEW_APPROVED",
+    ("review", "REJECTED"): "REVIEW_REJECTED",
+    ("release", "APPROVED"): "RELEASE_APPROVED",
+    ("release", "REJECTED"): "RELEASE_REJECTED",
+}
+
 
 def main() -> None:
     if len(sys.argv) < 5:
@@ -29,6 +40,14 @@ def main() -> None:
         raise SystemExit(f"Run not found: {change_id}")
     state = json.loads(state_path.read_text(encoding="utf-8"))
     state["human_gates"][gate] = decision
+
+    # Advance pipeline status so run_factory.py can continue automatically.
+    new_status = _GATE_STATUS_ADVANCE.get((gate, decision))
+    if new_status:
+        state["status"] = new_status
+        state[f"human_{gate}_decision"] = decision
+        state[f"human_{gate}_reason"] = reason
+
     state_path.write_text(json.dumps(state, indent=2), encoding="utf-8")
     evidence = {
         "change_id": change_id,
@@ -41,7 +60,11 @@ def main() -> None:
     path = run / f"human-{gate}-decision.json"
     path.write_text(json.dumps(evidence, indent=2), encoding="utf-8")
     print(f"Recorded {gate}: {decision} -> {path.relative_to(ROOT)}")
+    if new_status:
+        print(f"Pipeline status advanced to: {new_status}")
+        print(f"Continue with: python scripts/run_factory.py {change_id}")
 
 
 if __name__ == "__main__":
     main()
+

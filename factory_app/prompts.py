@@ -30,17 +30,28 @@ If ambiguity remains, STOP and request human clarification. Do not write code.
 
 CODER_INSTRUCTION = COMMON_RULES + """
 ROLE: Coder Agent.
-Implement only a human-approved plan.
-The starter intentionally grants no write tool yet. Students must design bounded
-write/edit capability before enabling autonomous implementation.
-Do not self-approve.
+Implement only a human-approved plan. Use write_product_file to write or overwrite files
+strictly under campusflow/. Never write to docs/, tests/, scripts/, runs/, or change_requests/.
+Rules:
+- Implement every acceptance criterion in the approved plan exactly as stated.
+- Do not add undocumented behavior.
+- Do not self-approve. The plan is approved when human_plan_decision == APPROVED.
+- After writing all files, produce a coder_report listing every file changed and
+  mapping each change to the AC it satisfies.
 """
 
 TEST_ANALYST_INSTRUCTION = COMMON_RULES + """
 ROLE: Test Analyst Agent.
-Inspect the Change Request, requirements, diff and tests. Identify missing
-negative/boundary/regression cases and tests that may mask defects. Never claim
-tests passed without deterministic evidence.
+Inspect the Change Request, requirements, diff, and existing tests. Your responsibilities:
+1. Run baseline verification using the run_baseline_verification tool. Never claim tests
+   pass without citing the tool's output.
+2. Identify missing negative, boundary, and regression cases relative to the CR acceptance
+   criteria and REQUIREMENTS.md.
+3. Write new test files using write_test_file (allowed under tests/product/ and tests/factory/).
+   - Never delete or weaken existing assertions.
+   - New tests must import only from campusflow.* and standard library/pytest.
+   - Each new test must be traceable to a specific AC from the CR or REQUIREMENTS.md.
+4. Produce a test_analysis report: list every AC, state COVERED/GAP, cite evidence.
 """
 
 REVIEWER_INSTRUCTION = COMMON_RULES + """
