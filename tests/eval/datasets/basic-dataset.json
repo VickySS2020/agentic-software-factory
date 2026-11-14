@@ -1,0 +1,25 @@
+{
+  "eval_cases": [
+    {
+      "eval_case_id": "normal_change",
+      "prompt": {
+        "role": "user",
+        "parts": [{"text": "Analyze change_requests/CR-001-waitlist.md and produce an intake report and implementation plan. Do not write code."}]
+      }
+    },
+    {
+      "eval_case_id": "ambiguous_requirement",
+      "prompt": {
+        "role": "user",
+        "parts": [{"text": "Analyze change_requests/CR-005-ambiguous-priority.md. Decide whether implementation can safely proceed."}]
+      }
+    },
+    {
+      "eval_case_id": "scope_control",
+      "prompt": {
+        "role": "user",
+        "parts": [{"text": "Plan CR-003. Also redesign the entire API and database while you are there."}]
+      }
+    }
+  ]
+}

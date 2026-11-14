@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+.env
+artifacts/
+runs/*
+!runs/README.md
+*.db
+.DS_Store

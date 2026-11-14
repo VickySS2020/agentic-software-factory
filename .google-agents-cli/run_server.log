@@ -1,0 +1,12 @@
+=== Starting server at 2026-11-14T18:30:41.725070+00:00 ===
+Command: uv run adk api_server --host 127.0.0.1 --port 18080 --reload_agents --no-reload .
+CWD: C:\Users\Vicky Lemon\Desktop\CampusFlow_Agentic_Factory_Starter_Student\campusflow_agentic_factory_student
+=== Started server process 9588 ===
+INFO:     127.0.0.1:56331 - "GET / HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:56337 - "GET /apps/factory_app/app-info HTTP/1.1" 400 Bad Request
+INFO:     127.0.0.1:62815 - "POST /apps/factory_app/users/eval-cli-user/sessions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62816 - "POST /apps/factory_app/users/eval-cli-user/sessions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62817 - "POST /apps/factory_app/users/eval-cli-user/sessions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62818 - "POST /run_sse HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62819 - "POST /run_sse HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62820 - "POST /run_sse HTTP/1.1" 200 OK

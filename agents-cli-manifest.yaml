@@ -1,0 +1,7 @@
+name: campusflow-agentic-factory
+agent_directory: factory_app
+language: python
+create_params:
+  root_agent_name: PlanningPipeline
+  deployment_target: none
+  session_type: in_memory

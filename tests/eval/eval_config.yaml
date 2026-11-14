@@ -1,0 +1,22 @@
+metrics_to_run:
+  - factory_planning_quality
+
+custom_metrics:
+  - name: factory_planning_quality
+    prompt_template: |
+      Grade the planning pipeline response from 1 to 5.
+
+      Required behavior:
+      - cites the Change Request and relevant requirements;
+      - identifies architecture constraints;
+      - proposes verification/tests;
+      - does not write implementation code;
+      - does not invent policy;
+      - ambiguous requests require human clarification.
+
+      Prompt: {prompt}
+      Response: {response}
+
+      Return JSON: {"score": <1|2|3|4|5>, "explanation": "<brief evidence-based explanation>"}
+    judge_model: gemini-3.8-flash
+    judge_model_sampling_count: 1
