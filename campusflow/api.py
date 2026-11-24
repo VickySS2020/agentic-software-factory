@@ -1,7 +1,12 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 
-from .errors import CapacityReachedError, CampusFlowError, EventNotFoundError, RegistrationNotFoundError
+from .errors import (
+    CampusFlowError,
+    CapacityReachedError,
+    EventNotFoundError,
+    RegistrationNotFoundError,
+)
 from .repository import SQLiteCampusFlowRepository
 from .service import CampusFlowService
 

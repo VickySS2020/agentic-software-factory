@@ -3,7 +3,7 @@ from __future__ import annotations
 import sqlite3
 from pathlib import Path
 
-from .domain import Event, Registration
+from .domain import Event, Registration, RegistrationStatus
 
 
 class SQLiteCampusFlowRepository:
@@ -25,6 +25,7 @@ class SQLiteCampusFlowRepository:
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 event_id INTEGER NOT NULL,
                 user_id TEXT NOT NULL,
+                status TEXT NOT NULL,
                 FOREIGN KEY(event_id) REFERENCES events(id)
             );
             """
@@ -53,18 +54,30 @@ class SQLiteCampusFlowRepository:
         ).fetchall()
         return [Event(r["id"], r["title"], r["capacity"], r["owner_id"]) for r in rows]
 
-    def add_registration(self, event_id: int, user_id: str) -> Registration:
-        # Deliberate starter gap: duplicate registration is currently possible.
-        self.connection.execute(
-            "INSERT INTO registrations(event_id, user_id) VALUES (?, ?)", (event_id, user_id)
+    def add_registration(
+        self, event_id: int, user_id: str, status: RegistrationStatus
+    ) -> Registration:
+        cursor = self.connection.execute(
+            "INSERT INTO registrations(event_id, user_id, status) VALUES (?, ?, ?)",
+            (event_id, user_id, status.name),
         )
         self.connection.commit()
-        return Registration(event_id, user_id)
+        return Registration(event_id, user_id, status, int(cursor.lastrowid))
 
-    def count_registrations(self, event_id: int) -> int:
-        row = self.connection.execute(
-            "SELECT COUNT(*) AS count FROM registrations WHERE event_id = ?", (event_id,)
-        ).fetchone()
+    def count_registrations(
+        self, event_id: int, status: RegistrationStatus | None = None
+    ) -> int:
+        if status is None:
+            query = "SELECT COUNT(*) AS count FROM registrations WHERE event_id = ?"
+            params = (event_id,)
+        else:
+            query = (
+                "SELECT COUNT(*) AS count FROM registrations "
+                "WHERE event_id = ? AND status = ?"
+            )
+            params = (event_id, status.name)
+
+        row = self.connection.execute(query, params).fetchone()
         return int(row["count"])
 
     def has_registration(self, event_id: int, user_id: str) -> bool:
@@ -76,13 +89,37 @@ class SQLiteCampusFlowRepository:
 
     def remove_registration(self, event_id: int, user_id: str) -> bool:
         cursor = self.connection.execute(
-            "DELETE FROM registrations WHERE event_id = ? AND user_id = ?", (event_id, user_id)
+            "DELETE FROM registrations WHERE event_id = ? AND user_id = ?",
+            (event_id, user_id),
         )
         self.connection.commit()
         return cursor.rowcount > 0
 
     def list_registrations(self, event_id: int) -> list[Registration]:
-        rows = self.connection.execute(
-            "SELECT event_id, user_id FROM registrations WHERE event_id = ? ORDER BY id", (event_id,)
-        ).fetchall()
-        return [Registration(r["event_id"], r["user_id"]) for r in rows]
+        query = (
+            "SELECT id, event_id, user_id, status FROM registrations "
+            "WHERE event_id = ? ORDER BY id"
+        )
+        rows = self.connection.execute(query, (event_id,)).fetchall()
+        return [
+            Registration(r["event_id"], r["user_id"], RegistrationStatus[r["status"]], r["id"])
+            for r in rows
+        ]
+
+    def get_next_waitlisted(self, event_id: int) -> Registration | None:
+        query = (
+            "SELECT id, event_id, user_id, status FROM registrations "
+            "WHERE event_id = ? AND status = 'WAITLISTED' ORDER BY id ASC LIMIT 1"
+        )
+        row = self.connection.execute(query, (event_id,)).fetchone()
+        if row is None:
+            return None
+        return Registration(
+            row["event_id"], row["user_id"], RegistrationStatus[row["status"]], row["id"]
+        )
+
+    def update_registration_status(self, registration_id: int, status: RegistrationStatus) -> None:
+        self.connection.execute(
+            "UPDATE registrations SET status = ? WHERE id = ?", (status.name, registration_id)
+        )
+        self.connection.commit()

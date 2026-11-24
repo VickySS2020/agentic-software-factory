@@ -59,7 +59,8 @@ def main() -> None:
     path = run / f"human-{gate}-decision.json"
     path.write_text(json.dumps(evidence, indent=2), encoding="utf-8")
     if gate == "plan":
-        (run / "03-human-plan-decision.json").write_text(json.dumps(evidence, indent=2), encoding="utf-8")
+        plan_evidence = run / "03-human-plan-decision.json"
+        plan_evidence.write_text(json.dumps(evidence, indent=2), encoding="utf-8")
     print(f"Recorded {gate}: {decision} -> {path.relative_to(ROOT)}")
 
 
