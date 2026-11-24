@@ -11,10 +11,19 @@ from .prompts import (
     SECURITY_INSTRUCTION,
     TEST_ANALYST_INSTRUCTION,
 )
-from .tools import list_repo_files, read_repo_file, run_baseline_verification, write_run_evidence
+from .tools import (
+    list_repo_files,
+    read_repo_file,
+    run_baseline_verification,
+    run_limited_command,
+    write_code_file,
+    write_coder_report,
+    write_run_evidence,
+)
 
 GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini-3.1-flash-lite")
 READ_TOOLS = [list_repo_files, read_repo_file]
+CODER_TOOLS = [*READ_TOOLS, write_code_file, run_limited_command, write_coder_report]
 
 intake_agent = LlmAgent(
     name="IntakeAgent",
@@ -37,9 +46,12 @@ planner_agent = LlmAgent(
 coder_agent = LlmAgent(
     name="CoderAgent",
     model=GEMINI_MODEL,
-    description="Implements an approved plan. Write tooling is intentionally absent in starter.",
+    description=(
+        "Implements an approved plan on an isolated branch with bounded write "
+        "and limited test execution tools."
+    ),
     instruction=CODER_INSTRUCTION,
-    tools=READ_TOOLS,
+    tools=CODER_TOOLS,
     output_key="coder_report",
 )
 

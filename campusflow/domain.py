@@ -1,4 +1,10 @@
 from dataclasses import dataclass
+from enum import Enum, auto
+
+
+class RegistrationStatus(Enum):
+    ACTIVE = auto()
+    WAITLISTED = auto()
 
 
 @dataclass(frozen=True)
@@ -13,3 +19,5 @@ class Event:
 class Registration:
     event_id: int
     user_id: str
+    status: RegistrationStatus
+    id: int | None = None
