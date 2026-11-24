@@ -383,3 +383,93 @@ Traceback (most recent call last):
     raise ServerError(status_code, response_json, response)
 google.genai.errors.ServerError: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}
 2026-11-14 12:32:50,063 - WARNING - api_server.py:524 - Client disconnected. Aborting agent run for session 04c4e26b-0e01-4558-86d9-bf65fae8a8ac.
+=== Starting server stderr at 2026-11-14T22:30:03.250465+00:00 ===
+Command: uv run adk api_server --host 127.0.0.1 --port 18080 --reload_agents --no-reload .
+2026-11-14 16:30:04,897 - INFO - service_factory.py:333 - Using in-memory memory service
+2026-11-14 16:30:04,897 - INFO - local_storage.py:89 - Using per-agent session storage rooted at C:\Users\Alex\Documents\agy2-projects\agentic-software-factory
+2026-11-14 16:30:04,898 - INFO - local_storage.py:121 - Using per-agent artifact storage rooted at C:\Users\Alex\Documents\agy2-projects\agentic-software-factory
+INFO:     Started server process [25136]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:18080 (Press CTRL+C to quit)
+2026-11-14 16:30:05,128 - INFO - envs.py:83 - Loaded .env file for factory_app at C:\Users\Alex\Documents\agy2-projects\agentic-software-factory\.env
+2026-11-14 16:30:05,212 - INFO - agent_change_handler.py:79 - Change detected in agents directory: C:\Users\Alex\Documents\agy2-projects\agentic-software-factory\.venv\Lib\site-packages\aiosqlite\__init__.py
+2026-11-14 16:30:05,216 - INFO - agent_change_handler.py:79 - Change detected in agents directory: C:\Users\Alex\Documents\agy2-projects\agentic-software-factory\.venv\Lib\site-packages\aiosqlite\__version__.py
+2026-11-14 16:30:05,222 - INFO - agent_change_handler.py:79 - Change detected in agents directory: C:\Users\Alex\Documents\agy2-projects\agentic-software-factory\.venv\Lib\site-packages\aiosqlite\core.py
+2026-11-14 16:30:05,226 - INFO - agent_change_handler.py:79 - Change detected in agents directory: C:\Users\Alex\Documents\agy2-projects\agentic-software-factory\.venv\Lib\site-packages\aiosqlite\context.py
+2026-11-14 16:30:05,231 - INFO - agent_change_handler.py:79 - Change detected in agents directory: C:\Users\Alex\Documents\agy2-projects\agentic-software-factory\.venv\Lib\site-packages\aiosqlite\cursor.py
+2026-11-14 16:30:05,233 - INFO - local_storage.py:65 - Creating local session service at C:\Users\Alex\Documents\agy2-projects\agentic-software-factory\factory_app\.adk\session.db
+2026-11-14 16:30:05,255 - INFO - api_server.py:1443 - New session created: 499be8c0-71ba-4018-a712-f5064a35343e
+2026-11-14 16:30:05,267 - INFO - api_server.py:1443 - New session created: 507ad984-2b3d-4d58-a8d9-d62547a06833
+2026-11-14 16:30:05,284 - INFO - api_server.py:1443 - New session created: d4a88ccc-6379-4031-b14f-7f21aeec1085
+2026-11-14 16:30:05,586 - INFO - agent_change_handler.py:79 - Change detected in agents directory: C:\Users\Alex\Documents\agy2-projects\agentic-software-factory\.venv\Lib\site-packages\cryptography\hazmat\primitives\kdf\__init__.py
+2026-11-14 16:30:05,591 - INFO - agent_change_handler.py:79 - Change detected in agents directory: C:\Users\Alex\Documents\agy2-projects\agentic-software-factory\.venv\Lib\site-packages\cryptography\hazmat\primitives\kdf\hkdf.py
+2026-11-14 16:30:05,598 - INFO - agent_change_handler.py:79 - Change detected in agents directory: C:\Users\Alex\Documents\agy2-projects\agentic-software-factory\.venv\Lib\site-packages\cryptography\hazmat\primitives\kdf\pbkdf2.py
+2026-11-14 16:30:05,673 - INFO - agent_change_handler.py:79 - Change detected in agents directory: C:\Users\Alex\Documents\agy2-projects\agentic-software-factory\.venv\Lib\site-packages\cryptography\hazmat\primitives\keywrap.py
+2026-11-14 16:30:05,678 - INFO - agent_change_handler.py:79 - Change detected in agents directory: C:\Users\Alex\Documents\agy2-projects\agentic-software-factory\.venv\Lib\site-packages\cryptography\hazmat\primitives\kdf\concatkdf.py
+2026-11-14 16:30:05,686 - INFO - agent_change_handler.py:79 - Change detected in agents directory: C:\Users\Alex\Documents\agy2-projects\agentic-software-factory\.venv\Lib\site-packages\cryptography\hazmat\primitives\padding.py
+2026-11-14 16:30:06,331 - WARNING - _api_client.py:171 - Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+2026-11-14 16:30:06,360 - INFO - agent_change_handler.py:79 - Change detected in agents directory: C:\Users\Alex\Documents\agy2-projects\agentic-software-factory\.venv\Lib\site-packages\httpcore\__init__.py
+2026-11-14 16:30:06,365 - INFO - agent_change_handler.py:79 - Change detected in agents directory: C:\Users\Alex\Documents\agy2-projects\agentic-software-factory\.venv\Lib\site-packages\httpcore\_api.py
+2026-11-14 16:30:06,372 - INFO - agent_change_handler.py:79 - Change detected in agents directory: C:\Users\Alex\Documents\agy2-projects\agentic-software-factory\.venv\Lib\site-packages\httpcore\_models.py
+2026-11-14 16:30:06,376 - INFO - agent_change_handler.py:79 - Change detected in agents directory: C:\Users\Alex\Documents\agy2-projects\agentic-software-factory\.venv\Lib\site-packages\httpcore\_sync\__init__.py
+2026-11-14 16:30:06,383 - INFO - agent_change_handler.py:79 - Change detected in agents directory: C:\Users\Alex\Documents\agy2-projects\agentic-software-factory\.venv\Lib\site-packages\httpcore\_sync\connection.py
+2026-11-14 16:30:06,391 - INFO - agent_change_handler.py:79 - Change detected in agents directory: C:\Users\Alex\Documents\agy2-projects\agentic-software-factory\.venv\Lib\site-packages\httpcore\_backends\sync.py
+2026-11-14 16:30:06,396 - INFO - agent_change_handler.py:79 - Change detected in agents directory: C:\Users\Alex\Documents\agy2-projects\agentic-software-factory\.venv\Lib\site-packages\httpcore\_exceptions.py
+2026-11-14 16:30:06,400 - INFO - agent_change_handler.py:79 - Change detected in agents directory: C:\Users\Alex\Documents\agy2-projects\agentic-software-factory\.venv\Lib\site-packages\httpcore\_utils.py
+2026-11-14 16:30:06,405 - INFO - agent_change_handler.py:79 - Change detected in agents directory: C:\Users\Alex\Documents\agy2-projects\agentic-software-factory\.venv\Lib\site-packages\httpcore\_backends\base.py
+2026-11-14 16:30:06,410 - INFO - agent_change_handler.py:79 - Change detected in agents directory: C:\Users\Alex\Documents\agy2-projects\agentic-software-factory\.venv\Lib\site-packages\httpcore\_ssl.py
+2026-11-14 16:30:06,417 - INFO - agent_change_handler.py:79 - Change detected in agents directory: C:\Users\Alex\Documents\agy2-projects\agentic-software-factory\.venv\Lib\site-packages\httpcore\_synchronization.py
+2026-11-14 16:30:06,422 - INFO - agent_change_handler.py:79 - Change detected in agents directory: C:\Users\Alex\Documents\agy2-projects\agentic-software-factory\.venv\Lib\site-packages\httpcore\_trace.py
+2026-11-14 16:30:06,428 - INFO - agent_change_handler.py:79 - Change detected in agents directory: C:\Users\Alex\Documents\agy2-projects\agentic-software-factory\.venv\Lib\site-packages\httpcore\_sync\http11.py
+2026-11-14 16:30:06,433 - INFO - agent_change_handler.py:79 - Change detected in agents directory: C:\Users\Alex\Documents\agy2-projects\agentic-software-factory\.venv\Lib\site-packages\httpcore\_sync\interfaces.py
+2026-11-14 16:30:06,439 - INFO - agent_change_handler.py:79 - Change detected in agents directory: C:\Users\Alex\Documents\agy2-projects\agentic-software-factory\.venv\Lib\site-packages\httpcore\_sync\connection_pool.py
+2026-11-14 16:30:06,454 - INFO - agent_change_handler.py:79 - Change detected in agents directory: C:\Users\Alex\Documents\agy2-projects\agentic-software-factory\.venv\Lib\site-packages\httpcore\_sync\http_proxy.py
+2026-11-14 16:30:06,460 - INFO - agent_change_handler.py:79 - Change detected in agents directory: C:\Users\Alex\Documents\agy2-projects\agentic-software-factory\.venv\Lib\site-packages\httpcore\_sync\http2.py
+2026-11-14 16:30:06,463 - INFO - agent_change_handler.py:79 - Change detected in agents directory: C:\Users\Alex\Documents\agy2-projects\agentic-software-factory\.venv\Lib\site-packages\httpcore\_sync\socks_proxy.py
+2026-11-14 16:30:06,468 - INFO - agent_change_handler.py:79 - Change detected in agents directory: C:\Users\Alex\Documents\agy2-projects\agentic-software-factory\.venv\Lib\site-packages\httpcore\_async\__init__.py
+2026-11-14 16:30:06,474 - INFO - agent_change_handler.py:79 - Change detected in agents directory: C:\Users\Alex\Documents\agy2-projects\agentic-software-factory\.venv\Lib\site-packages\httpcore\_async\connection.py
+2026-11-14 16:30:06,480 - INFO - agent_change_handler.py:79 - Change detected in agents directory: C:\Users\Alex\Documents\agy2-projects\agentic-software-factory\.venv\Lib\site-packages\httpcore\_backends\auto.py
+2026-11-14 16:30:06,485 - INFO - agent_change_handler.py:79 - Change detected in agents directory: C:\Users\Alex\Documents\agy2-projects\agentic-software-factory\.venv\Lib\site-packages\httpcore\_async\http11.py
+2026-11-14 16:30:06,492 - INFO - agent_change_handler.py:79 - Change detected in agents directory: C:\Users\Alex\Documents\agy2-projects\agentic-software-factory\.venv\Lib\site-packages\httpcore\_async\interfaces.py
+2026-11-14 16:30:06,498 - INFO - agent_change_handler.py:79 - Change detected in agents directory: C:\Users\Alex\Documents\agy2-projects\agentic-software-factory\.venv\Lib\site-packages\httpcore\_async\connection_pool.py
+2026-11-14 16:30:06,507 - INFO - agent_change_handler.py:79 - Change detected in agents directory: C:\Users\Alex\Documents\agy2-projects\agentic-software-factory\.venv\Lib\site-packages\httpcore\_async\http_proxy.py
+2026-11-14 16:30:06,512 - INFO - agent_change_handler.py:79 - Change detected in agents directory: C:\Users\Alex\Documents\agy2-projects\agentic-software-factory\.venv\Lib\site-packages\httpcore\_async\http2.py
+2026-11-14 16:30:06,517 - INFO - agent_change_handler.py:79 - Change detected in agents directory: C:\Users\Alex\Documents\agy2-projects\agentic-software-factory\.venv\Lib\site-packages\httpcore\_async\socks_proxy.py
+2026-11-14 16:30:06,522 - INFO - agent_change_handler.py:79 - Change detected in agents directory: C:\Users\Alex\Documents\agy2-projects\agentic-software-factory\.venv\Lib\site-packages\httpcore\_backends\mock.py
+2026-11-14 16:30:06,527 - INFO - agent_change_handler.py:79 - Change detected in agents directory: C:\Users\Alex\Documents\agy2-projects\agentic-software-factory\.venv\Lib\site-packages\httpcore\_backends\anyio.py
+2026-11-14 16:30:06,531 - INFO - agent_change_handler.py:79 - Change detected in agents directory: C:\Users\Alex\Documents\agy2-projects\agentic-software-factory\.venv\Lib\site-packages\httpcore\_backends\trio.py
+2026-11-14 16:30:06,550 - INFO - google_llm.py:261 - Sending out request, model: gemini-3.1-flash-lite, backend: GoogleLLMVariant.GEMINI_API, stream: False
+2026-11-14 16:30:06,561 - INFO - google_llm.py:261 - Sending out request, model: gemini-3.1-flash-lite, backend: GoogleLLMVariant.GEMINI_API, stream: False
+2026-11-14 16:30:06,641 - INFO - google_llm.py:261 - Sending out request, model: gemini-3.1-flash-lite, backend: GoogleLLMVariant.GEMINI_API, stream: False
+2026-11-14 16:30:07,684 - INFO - _client.py:1740 - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent "HTTP/1.1 200 OK"
+2026-11-14 16:30:07,702 - INFO - google_llm.py:370 - Response received from the model.
+2026-11-14 16:30:07,725 - INFO - google_llm.py:261 - Sending out request, model: gemini-3.1-flash-lite, backend: GoogleLLMVariant.GEMINI_API, stream: False
+2026-11-14 16:30:08,935 - INFO - _client.py:1740 - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent "HTTP/1.1 200 OK"
+2026-11-14 16:30:08,937 - INFO - google_llm.py:370 - Response received from the model.
+2026-11-14 16:30:08,947 - WARNING - _api_client.py:171 - Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+2026-11-14 16:30:08,980 - INFO - google_llm.py:261 - Sending out request, model: gemini-3.1-flash-lite, backend: GoogleLLMVariant.GEMINI_API, stream: False
+2026-11-14 16:30:15,781 - INFO - _client.py:1740 - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent "HTTP/1.1 200 OK"
+2026-11-14 16:30:15,782 - INFO - google_llm.py:370 - Response received from the model.
+2026-11-14 16:30:15,805 - INFO - google_llm.py:261 - Sending out request, model: gemini-3.1-flash-lite, backend: GoogleLLMVariant.GEMINI_API, stream: False
+2026-11-14 16:30:16,465 - INFO - _client.py:1740 - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent "HTTP/1.1 200 OK"
+2026-11-14 16:30:16,466 - INFO - google_llm.py:370 - Response received from the model.
+2026-11-14 16:30:17,256 - INFO - google_llm.py:261 - Sending out request, model: gemini-3.1-flash-lite, backend: GoogleLLMVariant.GEMINI_API, stream: False
+2026-11-14 16:30:18,577 - INFO - _client.py:1740 - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent "HTTP/1.1 200 OK"
+2026-11-14 16:30:18,578 - INFO - google_llm.py:370 - Response received from the model.
+2026-11-14 16:30:22,604 - INFO - _client.py:1740 - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent "HTTP/1.1 200 OK"
+2026-11-14 16:30:22,606 - INFO - google_llm.py:370 - Response received from the model.
+2026-11-14 16:30:23,828 - INFO - google_llm.py:261 - Sending out request, model: gemini-3.1-flash-lite, backend: GoogleLLMVariant.GEMINI_API, stream: False
+2026-11-14 16:30:26,203 - INFO - _client.py:1740 - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent "HTTP/1.1 200 OK"
+2026-11-14 16:30:26,207 - INFO - google_llm.py:370 - Response received from the model.
+2026-11-14 16:30:26,223 - INFO - google_llm.py:261 - Sending out request, model: gemini-3.1-flash-lite, backend: GoogleLLMVariant.GEMINI_API, stream: False
+2026-11-14 16:30:28,381 - INFO - _client.py:1740 - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent "HTTP/1.1 200 OK"
+2026-11-14 16:30:28,384 - INFO - google_llm.py:370 - Response received from the model.
+2026-11-14 16:31:03,571 - INFO - _client.py:1740 - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent "HTTP/1.1 200 OK"
+2026-11-14 16:31:03,573 - INFO - google_llm.py:370 - Response received from the model.
+2026-11-14 16:31:03,589 - INFO - google_llm.py:261 - Sending out request, model: gemini-3.1-flash-lite, backend: GoogleLLMVariant.GEMINI_API, stream: False
+2026-11-14 16:31:06,132 - INFO - _client.py:1740 - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent "HTTP/1.1 200 OK"
+2026-11-14 16:31:06,134 - INFO - google_llm.py:370 - Response received from the model.
+2026-11-14 16:31:06,149 - INFO - google_llm.py:261 - Sending out request, model: gemini-3.1-flash-lite, backend: GoogleLLMVariant.GEMINI_API, stream: False
+2026-11-14 16:31:20,803 - INFO - _client.py:1740 - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent "HTTP/1.1 200 OK"
+2026-11-14 16:31:20,804 - INFO - google_llm.py:370 - Response received from the model.

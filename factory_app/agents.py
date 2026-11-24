@@ -1,3 +1,5 @@
+import os
+
 from google.adk.agents.llm_agent import LlmAgent
 
 from .prompts import (
@@ -11,7 +13,7 @@ from .prompts import (
 )
 from .tools import list_repo_files, read_repo_file, run_baseline_verification, write_run_evidence
 
-GEMINI_MODEL = "gemini-3.8-flash"
+GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini-3.1-flash-lite")
 READ_TOOLS = [list_repo_files, read_repo_file]
 
 intake_agent = LlmAgent(
