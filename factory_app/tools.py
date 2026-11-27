@@ -8,6 +8,7 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[1]
 READABLE_ROOTS = {"docs", "change_requests", "campusflow", "tests", "runs"}
 WRITABLE_CODE_ROOTS = {"campusflow", "src", "tests"}
+WRITABLE_TEST_ROOTS = {"tests"}
 
 
 def _safe_repo_path(relative_path: str) -> Path:
@@ -159,4 +160,73 @@ def write_coder_report(change_id: str, content: str) -> dict:
     res = write_run_evidence(change_id, "coder-report.md", content)
     if res.get("ok"):
         write_run_evidence(change_id, "04-coder-report.md", content)
+    return res
+
+
+def write_test_file(relative_path: str, content: str) -> dict:
+    """Write UTF-8 text strictly to the tests/ directory.
+
+    Prevents modifying application code (campusflow/, src/), docs, change_requests,
+    factory_app, scripts, or root files.
+    """
+    path = _safe_repo_path(relative_path)
+    rel = path.relative_to(REPO_ROOT)
+    if not rel.parts or rel.parts[0] not in WRITABLE_TEST_ROOTS:
+        return {
+            "ok": False,
+            "error": f"Write not allowed for {rel}. Test Analyst may only write to 'tests/'.",
+        }
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(content, encoding="utf-8")
+    return {"ok": True, "path": str(rel)}
+
+
+def get_coder_diff(change_id: str = "") -> dict:
+    """Retrieve git diff of code changes introduced for the change request."""
+    diff_output = ""
+    if change_id:
+        target_branch = f"cr/{change_id}"
+        res = subprocess.run(
+            ["git", "diff", f"main...{target_branch}"],
+            cwd=REPO_ROOT,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        if res.returncode == 0 and res.stdout.strip():
+            diff_output = res.stdout
+
+    if not diff_output:
+        res = subprocess.run(
+            ["git", "diff", "HEAD~1"],
+            cwd=REPO_ROOT,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        if res.returncode == 0 and res.stdout.strip():
+            diff_output = res.stdout
+
+    if not diff_output:
+        res = subprocess.run(
+            ["git", "diff"],
+            cwd=REPO_ROOT,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        if res.returncode == 0:
+            diff_output = res.stdout
+
+    if len(diff_output) > 40_000:
+        diff_output = diff_output[:40_000] + "\n...[TRUNCATED]..."
+
+    return {"ok": True, "diff": diff_output}
+
+
+def write_test_analysis_report(change_id: str, content: str) -> dict:
+    """Save 05-test-analysis.md (and test-analysis.md) in the run evidence folder."""
+    res = write_run_evidence(change_id, "05-test-analysis.md", content)
+    if res.get("ok"):
+        write_run_evidence(change_id, "test-analysis.md", content)
     return res
