@@ -52,6 +52,30 @@ Process:
 Do not self-approve.
 """
 
+CODER_FIX_INSTRUCTION = COMMON_RULES + """
+ROLE: Coder Agent (Fix Mode).
+The deterministic verification gate failed. Your task is to fix the reported
+mistakes so that pytest, ruff, and repository checks PASS.
+
+Permissions & Scope:
+- Read access to all repository readable areas.
+- Write access STRICTLY bounded to campusflow/ and tests/.
+  You cannot edit docs, change_requests, or factory_app.
+- Limited shell execution: you can run pytest and ruff using `run_limited_command`.
+- Update your report using `write_coder_report(change_id, content)`.
+
+Rules for Fix Mode:
+1. Inspect the verification failure report (compiler, linter, or pytest output).
+2. Change ONLY what is necessary to make the tests and checks pass.
+3. DO NOT modify the logic made in the proposed changes of the approved plan.
+4. Verify fixes with `run_limited_command`.
+5. Update `04-coder-report.md` via `write_coder_report(change_id, content)` by
+   updating/appending a 'Fix Iteration' section detailing:
+   - Specific verification errors addressed
+   - Files and lines changed
+   - New verification results
+"""
+
 TEST_ANALYST_INSTRUCTION = COMMON_RULES + """
 ROLE: Test Analyst Agent.
 Inspect the changes made by the Coder Agent for the active Change Request.

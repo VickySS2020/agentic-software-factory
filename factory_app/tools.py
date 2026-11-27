@@ -230,3 +230,11 @@ def write_test_analysis_report(change_id: str, content: str) -> dict:
     if res.get("ok"):
         write_run_evidence(change_id, "test-analysis.md", content)
     return res
+
+
+def write_verification_report(change_id: str, content: str) -> dict:
+    """Save 06-verification.md (and verification.md) in the run evidence folder."""
+    res = write_run_evidence(change_id, "06-verification.md", content)
+    if res.get("ok"):
+        write_run_evidence(change_id, "verification.md", content)
+    return res

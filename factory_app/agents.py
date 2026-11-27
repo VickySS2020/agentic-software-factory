@@ -3,6 +3,7 @@ import os
 from google.adk.agents.llm_agent import LlmAgent
 
 from .prompts import (
+    CODER_FIX_INSTRUCTION,
     CODER_INSTRUCTION,
     EVIDENCE_INSTRUCTION,
     INTAKE_INSTRUCTION,
@@ -60,6 +61,18 @@ coder_agent = LlmAgent(
         "and limited test execution tools."
     ),
     instruction=CODER_INSTRUCTION,
+    tools=CODER_TOOLS,
+    output_key="coder_report",
+)
+
+coder_fix_agent = LlmAgent(
+    name="CoderFixAgent",
+    model=GEMINI_MODEL,
+    description=(
+        "Fixes verification mistakes on an isolated branch with bounded write tools "
+        "without changing the approved plan logic."
+    ),
+    instruction=CODER_FIX_INSTRUCTION,
     tools=CODER_TOOLS,
     output_key="coder_report",
 )
