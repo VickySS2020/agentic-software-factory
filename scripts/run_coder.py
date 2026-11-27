@@ -9,8 +9,11 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 
+from dotenv import load_dotenv
 from google.adk.runners import InMemoryRunner
 from google.genai import types
+
+load_dotenv()
 
 # Ensure Google genai recognizes GEMINI_API_KEY
 if "GEMINI_API_KEY" in os.environ and "GOOGLE_API_KEY" not in os.environ:
@@ -19,7 +22,7 @@ if "GEMINI_API_KEY" in os.environ and "GOOGLE_API_KEY" not in os.environ:
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from factory_app.agents import coder_agent  # noqa: E402
+from factory_app.agents import coder_agent, coder_fix_agent  # noqa: E402
 
 RUNS = ROOT / "runs"
 
@@ -47,9 +50,27 @@ def ensure_branch(change_id: str) -> str:
         check=False,
     )
     if check_branch.returncode == 0:
-        subprocess.run(["git", "checkout", target_branch], cwd=ROOT, check=True)
+        checkout_res = subprocess.run(
+            ["git", "checkout", target_branch],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        if checkout_res.returncode != 0:
+            print(f"[GIT] Note: Could not checkout {target_branch}. Remaining on {current_branch}.")
+            return current_branch
     else:
-        subprocess.run(["git", "checkout", "-b", target_branch], cwd=ROOT, check=True)
+        checkout_res = subprocess.run(
+            ["git", "checkout", "-b", target_branch],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        if checkout_res.returncode != 0:
+            print(f"[GIT] Note: Could not create {target_branch}. Remaining on {current_branch}.")
+            return current_branch
     print(f"[GIT] Switched to branch: {target_branch}")
     return target_branch
 
@@ -197,11 +218,90 @@ def run_coder(change_id: str) -> int:
     return 0
 
 
+def run_coder_fix(change_id: str, verification_errors: str = "") -> int:
+    run_dir = RUNS / change_id
+    if not run_dir.exists():
+        print(f"Error: Run directory {run_dir} does not exist.")
+        return 1
+
+    state_file = run_dir / "factory-state.json"
+    if not state_file.exists():
+        print(f"Error: factory-state.json missing in {run_dir}")
+        return 1
+
+    coder_report_path = run_dir / "04-coder-report.md"
+    if not coder_report_path.exists():
+        coder_report_path = run_dir / "coder-report.md"
+    coder_text = coder_report_path.read_text(encoding="utf-8") if coder_report_path.exists() else ""
+
+    if not verification_errors:
+        verif_path = run_dir / "06-verification.md"
+        if verif_path.exists():
+            verification_errors = verif_path.read_text(encoding="utf-8")
+
+    branch_name = ensure_branch(change_id)
+    print(f"\n=== Running Coder Fix Agent for {change_id} on {branch_name} ===")
+    update_state(run_dir, status="FIX_RUNNING")
+
+    plan_path = run_dir / "02-implementation-plan.md"
+    plan_text = plan_path.read_text(encoding="utf-8") if plan_path.exists() else ""
+
+    fix_prompt = (
+        f"Active Change Request: {change_id}\n\n"
+        f"Approved Implementation Plan:\n{plan_text}\n\n"
+        f"Existing Coder Report:\n{coder_text}\n\n"
+        f"Deterministic Verification Failure Errors:\n{verification_errors}\n\n"
+        "Instructions for Coder (Fix Mode):\n"
+        "1. Carefully inspect the verification failure errors (ruff, pytest, repo checks).\n"
+        "2. Fix the reported mistakes using `write_code_file`.\n"
+        "   - You may write to `campusflow/` and `tests/`.\n"
+        "   - Change ONLY what is necessary to make the tests and checks pass.\n"
+        "   - DO NOT alter or modify the business logic/requirements of the approved plan.\n"
+        "3. Run tests and lint checks using `run_limited_command` to verify your fixes.\n"
+        "4. Update `04-coder-report.md` via `write_coder_report(change_id, updated_content)`.\n"
+        "   - Keep the existing report content and append/update a 'Fix Iteration' section\n"
+        "     documenting: root cause, files/lines modified, and verification command results."
+    )
+
+    fix_result = asyncio.run(
+        _run_agent_with_retry(
+            agent=coder_fix_agent,
+            prompt=fix_prompt,
+            user_id="factory_runner",
+            session_id=f"coder_fix_{change_id}_{int(time.time())}",
+            initial_state={"approved_plan": plan_text, "coder_report": coder_text},
+        )
+    )
+
+    # Check if report was updated by tool call or needs to be written
+    current_report = ""
+    if coder_report_path.exists():
+        current_report = coder_report_path.read_text(encoding="utf-8")
+    if "Fix Iteration" not in current_report and fix_result.strip():
+        updated_report = (
+            current_report.rstrip()
+            + "\n\n## Fix Iteration\n\n"
+            + fix_result.strip()
+            + "\n"
+        )
+        coder_report_path.write_text(updated_report, encoding="utf-8")
+        (run_dir / "coder-report.md").write_text(updated_report, encoding="utf-8")
+        (run_dir / "04-coder-report.md").write_text(updated_report, encoding="utf-8")
+
+    update_state(run_dir, status="FIX_COMPLETED")
+    print(f"\n[DONE] Coder fix complete. Updated report -> {coder_report_path.relative_to(ROOT)}")
+    return 0
+
+
 def main() -> None:
     if len(sys.argv) < 2:
-        raise SystemExit("Usage: python scripts/run_coder.py CR-001")
+        raise SystemExit("Usage: python scripts/run_coder.py CR-001 [--fix]")
     change_id = sys.argv[1].strip().upper()
-    exit_code = run_coder(change_id)
+    is_fix = "--fix" in sys.argv
+    if is_fix:
+        exit_code = run_coder_fix(change_id)
+    else:
+        exit_code = run_coder(change_id)
     raise SystemExit(exit_code)
 
 

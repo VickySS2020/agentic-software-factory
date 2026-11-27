@@ -1,8 +1,10 @@
 import pytest
+
 from campusflow.domain import RegistrationStatus
 from campusflow.errors import RegistrationNotFoundError
 from campusflow.repository import SQLiteCampusFlowRepository
 from campusflow.service import CampusFlowService
+
 
 @pytest.fixture
 def service():
