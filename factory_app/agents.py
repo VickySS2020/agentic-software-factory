@@ -12,18 +12,27 @@ from .prompts import (
     TEST_ANALYST_INSTRUCTION,
 )
 from .tools import (
+    get_coder_diff,
     list_repo_files,
     read_repo_file,
-    run_baseline_verification,
     run_limited_command,
     write_code_file,
     write_coder_report,
     write_run_evidence,
+    write_test_analysis_report,
+    write_test_file,
 )
 
 GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini-3.1-flash-lite")
 READ_TOOLS = [list_repo_files, read_repo_file]
 CODER_TOOLS = [*READ_TOOLS, write_code_file, run_limited_command, write_coder_report]
+TEST_ANALYST_TOOLS = [
+    *READ_TOOLS,
+    get_coder_diff,
+    write_test_file,
+    run_limited_command,
+    write_test_analysis_report,
+]
 
 intake_agent = LlmAgent(
     name="IntakeAgent",
@@ -58,9 +67,12 @@ coder_agent = LlmAgent(
 test_analyst_agent = LlmAgent(
     name="TestAnalystAgent",
     model=GEMINI_MODEL,
-    description="Finds test gaps and interprets deterministic verification evidence.",
+    description=(
+        "Inspects coder changes, identifies negative/boundary/regression test gaps, "
+        "and writes authorized tests without modifying application code."
+    ),
     instruction=TEST_ANALYST_INSTRUCTION,
-    tools=[*READ_TOOLS, run_baseline_verification],
+    tools=TEST_ANALYST_TOOLS,
     output_key="test_analysis",
 )
 
